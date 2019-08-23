@@ -218,7 +218,7 @@ func (t Time) UntilEndNextMonthDays() int {
 
 // String возвращает текстовое представление
 func (t Time) String() string {
-	return t.Time().String()
+	return t.Format("2006-01-02T15:04:05Z07:00")
 }
 
 // MarshalXML необходим для кодирования даты и времени

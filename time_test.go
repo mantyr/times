@@ -150,7 +150,7 @@ func testTime(
 				So(
 					result,
 					ShouldEqual,
-					"0001-01-01 02:30:17 +0230 MMT",
+					"0001-01-01T02:30:17+02:30",
 				)
 			})
 			Convey("Пустое время, time.Time{}", func() {
