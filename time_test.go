@@ -19,12 +19,12 @@ func testUnmarshalXMLTime(source, expected string) {
 	`)
 	var data struct {
 		XMLName xml.Name `xml:"Body"`
-		Date    Time     `xml:"DATE"`
+		Date    MoscowTime     `xml:"DATE"`
 	}
 	err := xml.Unmarshal(requestData, &data)
 	So(err, ShouldBeNil)
 	So(
-		data.Date.Time().Format("2006-01-02T15:04:05Z07:00"),
+		data.Date.Time.Time().Format("2006-01-02T15:04:05Z07:00"),
 		ShouldEqual,
 		expected,
 	)
@@ -35,12 +35,12 @@ func testUnmarshalJSONTime(source, expected string) {
 		{"date": "` + source + `"}
 	`)
 	var data struct {
-		Date Time `json:"date"`
+		Date MoscowTime `json:"date"`
 	}
 	err := json.Unmarshal(requestData, &data)
 	So(err, ShouldBeNil)
 	So(
-		data.Date.Time().Format("2006-01-02T15:04:05Z07:00"),
+		data.Date.Time.Time().Format("2006-01-02T15:04:05Z07:00"),
 		ShouldEqual,
 		expected,
 	)
@@ -51,10 +51,10 @@ func testMarshalXMLTime(source time.Time, expected string) {
 
 	var request struct {
 		XMLName xml.Name `xml:"Body"`
-		Date    *Time    `xml:"DATE"`
+		Date    *MoscowTime    `xml:"DATE"`
 	}
 	var err error
-	request.Date, err = NewTime(source)
+	request.Date, err = NewMoscowTime(source)
 	So(err, ShouldBeNil)
 
 	data, err := xml.Marshal(request)
@@ -70,10 +70,10 @@ func testMarshalJSONTime(source time.Time, expected string) {
 	expected = `{"date":"` + expected + `"}`
 
 	var request struct {
-		Date *Time `json:"date"`
+		Date *MoscowTime `json:"date"`
 	}
 	var err error
-	request.Date, err = NewTime(source)
+	request.Date, err = NewMoscowTime(source)
 	So(err, ShouldBeNil)
 
 	data, err := json.Marshal(request)
@@ -114,7 +114,7 @@ func testTime(
 			Convey("Пустая дата ", func() {
 				unmarshalFunc(
 					"",
-					"0001-01-01T00:00:00Z",
+					"0001-01-01T02:30:17+02:30",
 				)
 			})
 			Convey("Без указания часового пояса", func() {
@@ -144,19 +144,19 @@ func testTime(
 		})
 		Convey("Проверяем кодирование метки времени", func() {
 			Convey("Проверяем интерфейс Stringer", func() {
-				t, err := NewTime(time.Time{})
+				t, err := NewMoscowTime(time.Time{})
 				So(err, ShouldBeNil)
 				result := t.String()
 				So(
 					result,
 					ShouldEqual,
-					"0001-01-01T02:30:17+02:30",
+					"0001-01-01 02:30:17 +0230 MMT",
 				)
 			})
 			Convey("Пустое время, time.Time{}", func() {
 				marshalFunc(
 					time.Time{},
-					"0001-01-01T02:30:17+02:30",
+					"0001-01-01T00:00:00Z",
 				)
 			})
 			Convey("Локальное время", func() {
@@ -168,7 +168,8 @@ func testTime(
 				So(err, ShouldBeNil)
 				marshalFunc(
 					localTime,
-					"2018-02-01T14:12:18+03:00",
+//					"2018-02-01T14:12:18+03:00",
+					"2018-02-01T11:12:18Z",
 				)
 			})
 			Convey("Время без указания локали", func() {
@@ -176,7 +177,8 @@ func testTime(
 				So(err, ShouldBeNil)
 				marshalFunc(
 					localTime,
-					"2018-02-01T14:12:18+03:00",
+//					"2018-02-01T14:12:18+03:00",
+					"2018-02-01T11:12:18Z",
 				)
 			})
 		})
@@ -186,7 +188,7 @@ func testTime(
 func TestTimeFormat(t *testing.T) {
 	Convey("Проверяем форматирование даты", t, func() {
 		localDate := time.Now().Local()
-		date, err := NewTime(localDate)
+		date, err := NewMoscowTime(localDate)
 		So(err, ShouldBeNil)
 		Convey("Формат по умолчанию", func() {
 			So(
@@ -223,7 +225,7 @@ func TestUntilEndMonthDays(t *testing.T) {
 func testUntilEndMonthDays(startDate string, expected int) {
 	name := fmt.Sprintf("%s -> %d", startDate, expected)
 	Convey(name, func() {
-		t, err := NewTimeString(startDate)
+		t, err := NewMoscowTimeString(startDate)
 		So(err, ShouldBeNil)
 		So(t, ShouldNotBeNil)
 		result := t.UntilEndMonthDays()
@@ -252,7 +254,7 @@ func TestUntilEndNextMonthDays(t *testing.T) {
 func testUntilEndNextMonthDays(startDate string, expected int) {
 	name := fmt.Sprintf("%s -> %d", startDate, expected)
 	Convey(name, func() {
-		t, err := NewTimeString(startDate)
+		t, err := NewMoscowTimeString(startDate)
 		So(err, ShouldBeNil)
 		So(t, ShouldNotBeNil)
 		result := t.UntilEndNextMonthDays()

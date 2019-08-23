@@ -7,6 +7,23 @@
 
 This don't stable version
 
+## Description
+
+Пакет для кастомизации меток времени.
+
+### Поддержка кастомизаций:
+
+- [x] encoding/xml.Unmarshaler
+- [x] encoding/xml.UnmarshalerAttr
+- [x] encoding/xml.Marshaler
+- [x] encoding/xml.MarshalerAttr
+
+- [x] encoding/json.Unmarshaler
+- [x] encoding/json.Marshaler
+
+- [x] database/sql.Scanner
+
+
 ## Installation
 
     $ go get -u github.com/mantyr/times
