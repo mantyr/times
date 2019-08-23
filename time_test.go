@@ -187,7 +187,7 @@ func testTime(
 
 func TestTimeFormat(t *testing.T) {
 	Convey("Проверяем форматирование даты", t, func() {
-		localDate := time.Now().Local()
+		localDate := time.Now().In(MoscowLocation)
 		date, err := NewMoscowTime(localDate)
 		So(err, ShouldBeNil)
 		Convey("Формат по умолчанию", func() {
