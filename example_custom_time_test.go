@@ -2,8 +2,8 @@ package times_test
 
 import (
 	"encoding/xml"
-	"time"
 	"fmt"
+	"time"
 
 	"github.com/mantyr/times"
 )

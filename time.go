@@ -4,10 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
-	"errors"
 	"time"
 )
 
@@ -153,7 +153,6 @@ func (t *Time) CustomUnmarshalJSON(data []byte, location *time.Location) error {
 	return t.setTimeString(date, location)
 }
 
-
 // setLocalTime устанавливает локальное время
 func (t *Time) setTime(date time.Time, location *time.Location) error {
 	if location == nil {
@@ -195,11 +194,11 @@ func (t Time) Add(duration time.Duration) Time {
 func (t Time) UntilEndMonthDays() int {
 	start := time.Time(t)
 	day := start.Day()
-	end := start.AddDate(0, 0, -(day-1))
+	end := start.AddDate(0, 0, -(day - 1))
 	end = end.AddDate(0, +1, 0)
 	diff := end.Sub(start)
-	
-	result := diff/(24*time.Hour)
+
+	result := diff / (24 * time.Hour)
 	return int(result)
 }
 
@@ -208,11 +207,11 @@ func (t Time) UntilEndMonthDays() int {
 func (t Time) UntilEndNextMonthDays() int {
 	start := time.Time(t)
 	day := start.Day()
-	end := start.AddDate(0, 0, -(day-1))
+	end := start.AddDate(0, 0, -(day - 1))
 	end = end.AddDate(0, +2, 0)
 	diff := end.Sub(start)
-	
-	result := diff/(24*time.Hour)
+
+	result := diff / (24 * time.Hour)
 	return int(result)
 }
 
@@ -260,7 +259,7 @@ func (t Time) CustomMarshalXMLAttr(
 		return xml.Attr{}, errors.New("empty time location")
 	}
 	return xml.Attr{
-		Name: name,
+		Name:  name,
 		Value: t.Time().In(location).Format(format),
 	}, nil
 }

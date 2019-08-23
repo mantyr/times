@@ -3,9 +3,9 @@ package times
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"testing"
 	"time"
-	"fmt"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -18,8 +18,8 @@ func testUnmarshalXMLTime(source, expected string) {
 		</Body>
 	`)
 	var data struct {
-		XMLName xml.Name `xml:"Body"`
-		Date    MoscowTime     `xml:"DATE"`
+		XMLName xml.Name   `xml:"Body"`
+		Date    MoscowTime `xml:"DATE"`
 	}
 	err := xml.Unmarshal(requestData, &data)
 	So(err, ShouldBeNil)
@@ -50,8 +50,8 @@ func testMarshalXMLTime(source time.Time, expected string) {
 	expected = `<Body><DATE>` + expected + `</DATE></Body>`
 
 	var request struct {
-		XMLName xml.Name `xml:"Body"`
-		Date    *MoscowTime    `xml:"DATE"`
+		XMLName xml.Name    `xml:"Body"`
+		Date    *MoscowTime `xml:"DATE"`
 	}
 	var err error
 	request.Date, err = NewMoscowTime(source)
@@ -168,7 +168,6 @@ func testTime(
 				So(err, ShouldBeNil)
 				marshalFunc(
 					localTime,
-//					"2018-02-01T14:12:18+03:00",
 					"2018-02-01T11:12:18Z",
 				)
 			})
@@ -177,7 +176,6 @@ func testTime(
 				So(err, ShouldBeNil)
 				marshalFunc(
 					localTime,
-//					"2018-02-01T14:12:18+03:00",
 					"2018-02-01T11:12:18Z",
 				)
 			})
@@ -265,4 +263,3 @@ func testUntilEndNextMonthDays(startDate string, expected int) {
 		)
 	})
 }
-
